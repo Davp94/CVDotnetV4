@@ -1,0 +1,9 @@
+@ComprasVentas_HostAddress = http://localhost:5136
+
+GET {{ComprasVentas_HostAddress}}/weatherforecast/
+Accept: application/json
+
+### MAS SERVICIOS
+
+POST  {{ComprasVentas_HostAddress}}/roles
+Accept: application/json
