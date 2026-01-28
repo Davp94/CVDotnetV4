@@ -7,3 +7,57 @@ Accept: application/json
 
 POST  {{ComprasVentas_HostAddress}}/roles
 Accept: application/json
+
+###
+
+# Permiso Controller Tests
+
+### Get All Permisos
+GET {{ComprasVentas_HostAddress}}/api/Permiso
+Accept: application/json
+
+### Create Permiso
+POST {{ComprasVentas_HostAddress}}/api/Permiso
+Content-Type: application/json
+
+{
+  "nombre": "Crear Usuario",
+  "recurso": "Usuario",
+  "accion": "Crear"
+}
+
+###
+
+# Rol Controller Tests
+
+### Get All Roles
+GET {{ComprasVentas_HostAddress}}/api/Rol
+Accept: application/json
+
+### Get Rol by Id
+GET {{ComprasVentas_HostAddress}}/api/Rol/1
+Accept: application/json
+
+### Create Rol
+POST {{ComprasVentas_HostAddress}}/api/Rol
+Content-Type: application/json
+
+{
+  "nombre": "Administrador",
+  "descripcion": "Rol con permisos administrativos",
+  "permisoIds": [1, 2]
+}
+
+### Update Rol
+PUT {{ComprasVentas_HostAddress}}/api/Rol/1
+Content-Type: application/json
+
+{
+  "nombre": "Administrador Actualizado",
+  "descripcion": "Rol actualizado",
+  "permisoIds": [1, 2, 3]
+}
+
+### Delete Rol
+DELETE {{ComprasVentas_HostAddress}}/api/Rol/1
+Accept: application/json
