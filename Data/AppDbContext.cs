@@ -10,6 +10,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<Permiso> Permisos { get; set; }
 
+    public DbSet<Usuario> Usuarios { get; set; }
+
+    public DbSet<Persona> Personas { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Rol>()
@@ -20,6 +24,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         // modelBuilder.Entity<Rol>()
         //     .HasIndex(r=>r.Nombre)
         //     .IsUnique()
-        //     .HasDatabaseName("idx_rol_nombre_unique");    
+        //     .HasDatabaseName("idx_rol_nombre_unique");   
+
+        modelBuilder.Entity<Usuario>()
+            .HasOne(u=>u.Persona)
+            .WithOne(p=>p.Usuario)
+            .HasForeignKey<Persona>(p=>p.Id); 
     }
 }
