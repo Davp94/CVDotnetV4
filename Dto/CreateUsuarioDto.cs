@@ -41,4 +41,6 @@ public class CreateUsuarioDto
     public string? Direccion { get; set; }
 
     public string? Nacionalidad { get; set; }
+
+    public List<int> RolIds { get; set; } = [];
 }

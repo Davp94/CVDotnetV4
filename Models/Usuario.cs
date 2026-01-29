@@ -13,4 +13,6 @@ public class Usuario
     public string Password { get; set; } = string.Empty;
 
     public Persona? Persona { get; set; }
+
+    public ICollection<Rol> Roles { get; set; } = [];
 }

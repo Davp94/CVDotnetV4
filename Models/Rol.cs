@@ -12,4 +12,6 @@ public class Rol
 
     public ICollection<Permiso> Permisos { get; set; } = [];
 
+    public ICollection<Usuario> Usuarios { get; set; } = [];
+
 }

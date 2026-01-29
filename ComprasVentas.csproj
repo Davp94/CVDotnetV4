@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Builder/" />
+    <Folder Include="Common/" />
     <Folder Include="Controllers/" />
     <Folder Include="Data/" />
     <Folder Include="Dto/" />
