@@ -26,7 +26,7 @@ namespace ComprasVentas.Controllers
         public async Task<ActionResult<UsuarioDto>> GetById(int id)
         {
             var usuario = await _usuarioService.GetByIdAsync(id);
-            return usuario != null ? Ok(usuario) : NotFound();
+            return Ok(usuario);
         }
 
         [HttpPost]

@@ -41,7 +41,9 @@ public class RolService(RolRepository rolRepository, PermisoRepository permisoRe
 
     public async Task<RolDto> CreateAsync(CreateRolDto dto)
     {
-        var permisos = new List<Permiso>();
+        try
+        {
+            var permisos = new List<Permiso>();
         foreach (var permisoId in dto.PermisoIds)
         {
             var permiso = await _permisoRepository.GetByIdAsync(permisoId);
@@ -62,7 +64,13 @@ public class RolService(RolRepository rolRepository, PermisoRepository permisoRe
             Nombre = rol.Nombre,
             Descripcion = rol.Descripcion,
             PermisosIds = rol.Permisos?.Select(p => p.Id).ToList() ?? []
-        };
+        }; 
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
     }
 
     public async Task UpdateAsync(int id, CreateRolDto dto)

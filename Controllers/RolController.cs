@@ -28,8 +28,17 @@ namespace ComprasVentas.Controllers
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateRolDto rolDto)
         {
-            var createdRol = await rolService.CreateAsync(rolDto);
-            return StatusCode(StatusCodes.Status201Created);
+            try
+            {
+                var createdRol = await rolService.CreateAsync(rolDto);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception)
+            {
+                
+                throw new Exception("Error al crear el rol");
+            }
+           
         }
 
         [HttpPut("{id}")]

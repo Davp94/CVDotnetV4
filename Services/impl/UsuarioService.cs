@@ -1,5 +1,6 @@
 using System;
 using ComprasVentas.Dto;
+using ComprasVentas.Exceptions;
 using ComprasVentas.Models;
 using ComprasVentas.Repository;
 using ComprasVentas.Services.spec;
@@ -35,13 +36,13 @@ public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository r
             if (usuario == null)
             {
                 //TODO add custom exception NotFOundException
-                throw new Exception("Usuario con ID {id} no encontrado");
+                throw new NotFoundException($"Usuario con ID {id} no encontrado");
             }
             return MapToDto(usuario);
         }
-        catch (Exception)
+        catch (Exception ex) when (ex is not NotFoundException)
         {
-            throw;
+            throw new Exception("Error recuperando usuario", ex);
         }
 
     }

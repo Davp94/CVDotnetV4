@@ -63,5 +63,53 @@ DELETE {{ComprasVentas_HostAddress}}/api/Rol/1
 Accept: application/json
 
 ### Get Usuario by Id
-GET {{ComprasVentas_HostAddress}}/api/Usuario/100
+GET {{ComprasVentas_HostAddress}}/api/Usuario/dsadsad
+Accept: application/json
+
+###
+
+# Usuario Controller Tests
+
+### Get All Usuarios
+GET {{ComprasVentas_HostAddress}}/api/Usuario
+Accept: application/json
+
+### Create Usuario
+POST {{ComprasVentas_HostAddress}}/api/Usuario
+Content-Type: application/json
+
+{
+  "nombre": "usuario1",
+  "correo": "usuario1@example.com",
+  "password": "Passwor1!",
+  "nombres": "Juan",
+  "apellidos": "Perez",
+  "fechaNacimiento": "01-01-1990",
+  "genero": "Masculino",
+  "telefono": "123456789",
+  "direccion": "Calle 123",
+  "nacionalidad": "Mexicano",
+  "rolIds": [1]
+}
+
+### Update Usuario
+PUT {{ComprasVentas_HostAddress}}/api/Usuario/1
+Content-Type: application/json
+
+{
+  "nombre": "usuario1_updated",
+  "correo": "usuario1_updated@example.com",
+  "password": "Password2!",
+  "nombres": "Juan",
+  "apellidos": "Perez",
+  "fechaNacimiento": "01/01/1990",
+  "genero": "Masculino",
+  "telefono": "123456789",
+  "direccion": "Calle 123",
+  "nacionalidad": "Mexicano",
+  "rolIds": [1, 2]
+}
+
+### Delete Usuario
+DELETE {{ComprasVentas_HostAddress}}/api/Usuario/1
 Accept: application/json
