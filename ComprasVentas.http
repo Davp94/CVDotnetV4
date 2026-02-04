@@ -63,7 +63,7 @@ DELETE {{ComprasVentas_HostAddress}}/api/Rol/1
 Accept: application/json
 
 ### Get Usuario by Id
-GET {{ComprasVentas_HostAddress}}/api/Usuario/dsadsad
+GET {{ComprasVentas_HostAddress}}/api/Usuario/1000
 Accept: application/json
 
 ###
