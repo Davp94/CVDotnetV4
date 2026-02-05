@@ -1,5 +1,6 @@
 using ComprasVentas.Dto;
 using ComprasVentas.Services.spec;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,7 @@ namespace ComprasVentas.Controllers
         private readonly IRolService _rolService = rolService;
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<List<RolDto>>> GetAll()
         {
             return Ok(await rolService.GetAllAsync());
