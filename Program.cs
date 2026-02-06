@@ -22,9 +22,8 @@ builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ITokenService , TokenService>();
 builder.Services.AddScoped<IAuthService , AuthService>();
-
 builder.Services.AddJwtAuthentication(builder.Configuration);
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>(); // new GlobalExceptionHandler();
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers()
  .ConfigureApiBehaviorOptions(options =>
@@ -53,12 +52,20 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var context  = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        context.Database.Migrate();
+    }
 }
 
 app.UseExceptionHandler();

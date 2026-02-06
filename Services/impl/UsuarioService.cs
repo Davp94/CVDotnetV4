@@ -97,7 +97,7 @@ public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository r
             if (usuario == null) throw new Exception("Usuario no encontrado");
             usuario.Nombre = dto.Nombre;
             usuario.Correo = dto.Correo;
-            usuario.Password = dto.Password;
+            usuario.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             //actualizar datos persona
             if (usuario.Persona != null)
             {

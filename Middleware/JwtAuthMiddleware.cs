@@ -7,10 +7,11 @@ namespace ComprasVentas.Middleware;
 
 public static class JwtAuthMiddleware
 {
+
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         // JWT Configuration
-        var jwtSettingsSection = configuration.GetSection("JwtSetting");
+        var jwtSettingsSection = configuration.GetSection("JwtSettings");
         services.Configure<JwtSettings>(jwtSettingsSection);
 
         var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
