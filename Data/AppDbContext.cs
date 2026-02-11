@@ -16,6 +16,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
+    public DbSet<Sucursal> Sucursales { get; set; }
+
+    public DbSet<SucursalUser> SucursalUsers { get; set; }
+
+    public DbSet<Almacen> Almacenes { get; set; }
+
+    public DbSet<Categoria> Categorias { get; set; }
+
+    public DbSet<Producto> Productos { get; set; }
+
+    public DbSet<AlmacenProducto> AlmacenProductos { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Rol>()
@@ -77,6 +89,64 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasOne(r=>r.Usuario)
              .WithMany(u=>u.RefreshTokens)
              .HasForeignKey(r=>r.UsuarioId);
+        });
+
+        // Configurations for new entities
+        modelBuilder.Entity<Sucursal>(e=>
+        {
+            e.Property(s=>s.Nombre).IsRequired().HasMaxLength(255);
+            e.Property(s=>s.Direccion).IsRequired();
+            e.Property(s=>s.Telefono).IsRequired().HasMaxLength(20);
+            e.Property(s=>s.Ciudad).IsRequired().HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<SucursalUser>(e=>
+        {
+            e.HasOne(su=>su.Sucursal)
+             .WithMany(s=>s.SucursalUsers)
+             .HasForeignKey("SucursalId");
+            e.HasOne(su=>su.Usuario)
+             .WithMany(u=>u.SucursalUsers)
+             .HasForeignKey("UsuarioId");
+        });
+
+        modelBuilder.Entity<Almacen>(e=>
+        {
+            e.Property(a=>a.Nombre).IsRequired().HasMaxLength(100);
+            e.Property(a=>a.Codigo).HasMaxLength(20);
+            e.Property(a=>a.Direccion).IsRequired();
+            e.Property(a=>a.Telefono).IsRequired().HasMaxLength(20);
+            e.Property(a=>a.Ciudad).IsRequired().HasMaxLength(50);
+            e.HasOne(a=>a.Sucursal)
+             .WithMany(s=>s.Almacenes)
+             .HasForeignKey("SucursalId");
+        });
+
+        modelBuilder.Entity<Categoria>(e=>
+        {
+            e.Property(c=>c.Nombre).IsRequired().HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Producto>(e=>
+        {
+            e.Property(p=>p.Nombre).IsRequired().HasMaxLength(200);
+            e.Property(p=>p.UnidadMedida).HasMaxLength(20);
+            e.Property(p=>p.Marca).HasMaxLength(100);
+            e.Property(p=>p.PrecioVentaActual).HasPrecision(12, 2);
+            e.Property(p=>p.Imagen).HasMaxLength(255);
+            e.HasOne(p=>p.Categoria)
+             .WithMany(c=>c.Productos)
+             .HasForeignKey("CategoriaId");
+        });
+
+        modelBuilder.Entity<AlmacenProducto>(e=>
+        {
+            e.HasOne(ap=>ap.Producto)
+             .WithMany(p=>p.AlmacenProductos)
+             .HasForeignKey("ProductoId");
+            e.HasOne(ap=>ap.Almacen)
+             .WithMany(a=>a.AlmacenProductos)
+             .HasForeignKey("AlmacenId");
         });
 
         //add data seeding
