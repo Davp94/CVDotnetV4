@@ -10,7 +10,7 @@ public class CreateProductoDto
 
     public decimal Precio { get; set; }
 
-    public string? Imagen { get; set; }
+    public IFormFile? Imagen { get; set; } //alternativa base64
 
     public bool Estado { get; set; }
 

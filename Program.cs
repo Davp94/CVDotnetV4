@@ -22,6 +22,8 @@ builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ITokenService , TokenService>();
 builder.Services.AddScoped<IAuthService , AuthService>();
+builder.Services.AddScoped<SucursalRepository>();
+builder.Services.AddScoped<ISucursalService, SucursalService>();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>(); // new GlobalExceptionHandler();
 builder.Services.AddProblemDetails();

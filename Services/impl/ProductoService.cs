@@ -13,9 +13,12 @@ public class ProductoService : IProductoService
 
     private readonly AppDbContext _context;
 
-    public ProductoService(AppDbContext context)
+    private readonly IFileService _fileService;
+
+    public ProductoService(AppDbContext context, IFileService fileService)
     {
         _context = context;
+        _fileService = fileService;
     }
     
     public async Task<PageResultDto<ProductoDto>> GetProductosAsync(ProductoFilterDto productoFilterDto)
@@ -93,10 +96,21 @@ public class ProductoService : IProductoService
             Nombre = createProductoDto.Nombre,
             Descripcion = createProductoDto.Descripcion,
             PrecioVentaActual = createProductoDto.Precio,
-            Imagen = createProductoDto.Imagen,
             Estado = createProductoDto.Estado,
             Categoria = _context.Categorias.Find(createProductoDto.CategoriaId)
         };
+
+        //add File to producto
+        if(createProductoDto.Imagen != null)
+        {
+            var imagePath = await _fileService.SaveFileAsync(createProductoDto.Imagen);
+            producto.Imagen = imagePath;
+        } 
+
+        if(string.IsNullOrEmpty(producto.Imagen))
+        {
+            throw new Exception("Error al guardar la imagen del producto");
+        }
 
         _context.Productos.Add(producto);
         await _context.SaveChangesAsync();
@@ -151,6 +165,29 @@ public class ProductoService : IProductoService
         }
         return query;
             
+    }
+
+    public async Task<List<ProductoDto>> FindAllProductosByAlmacenAsync(int almacenId)
+    {
+        var productos = await _context.AlmacenProductos
+            .Where(ap => ap.Almacen.Id == almacenId)
+            .Include(ap => ap.Producto)
+            .ThenInclude(p => p.Categoria)
+            .Select(ap => ap.Producto)
+            .ToListAsync();
+
+        return productos.Select(p => new ProductoDto
+        {
+            Id = p.Id,
+            Nombre = p.Nombre,
+            Descripcion = p.Descripcion,
+            UnidadMedida = p.UnidadMedida,
+            Marca = p.Marca,
+            Precio = p.PrecioVentaActual,
+            Imagen = p.Imagen,
+            Estado = p.Estado,
+            CategoriaId = p.Categoria != null ? p.Categoria.Id : 0
+        }).ToList();
     }
 
 }
