@@ -28,6 +28,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<AlmacenProducto> AlmacenProductos { get; set; }
 
+    public DbSet<Nota> Notas { get; set; }
+
+    public DbSet<Movimiento> Movimientos { get; set; }
+
+    public DbSet<ClienteProveedor> ClienteProveedor { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Rol>()
@@ -149,6 +155,47 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
              .HasForeignKey("AlmacenId");
         });
 
+        modelBuilder.Entity<Nota>(e=>
+        {
+            e.Property(n=>n.TipoNota).IsRequired().HasMaxLength(30);
+            e.Property(n=>n.Impuestos).HasPrecision(13,2);
+            e.Property(n=>n.Total).HasPrecision(13, 2);
+            e.Property(n=>n.Descuentos).HasPrecision(13, 2);
+            e.Property(n=>n.Observaciones).HasMaxLength(500);
+            e.HasOne(n=>n.Usuario)
+             .WithMany(u=>u.Notas)
+             .HasForeignKey("UsuarioId");
+            e.HasOne(n=>n.ClienteProveedor)
+             .WithMany(cp=>cp.Notas)
+             .HasForeignKey("ClienteProveedorId");
+        });
+
+        modelBuilder.Entity<Movimiento>(e=>
+        {
+            e.Property(m=>m.TipoMovimiento).IsRequired().HasMaxLength(30);
+            e.Property(m=>m.PrecioUnitarioCompra).HasPrecision(13, 2);
+            e.Property(m=>m.PrecioUnitarioVenta).HasPrecision(13, 2);
+            e.Property(m=>m.Observaciones).HasMaxLength(500);
+            e.HasOne(m=>m.Producto)
+             .WithMany(p=>p.Movimientos)
+             .HasForeignKey("ProductoId");
+            e.HasOne(m=>m.Almacen)
+             .WithMany(a=>a.Movimientos)
+             .HasForeignKey("AlmacenId");
+            e.HasOne(m=>m.Nota)
+             .WithMany(n=>n.Movimientos)
+             .HasForeignKey("NotaId");
+        });
+        modelBuilder.Entity<ClienteProveedor>(e=>
+        {
+            e.Property(cp=>cp.Estado).IsRequired();
+            e.Property(cp=>cp.Tipo).IsRequired().HasMaxLength(20);
+            e.Property(cp=>cp.Telefono).HasMaxLength(20);
+            e.Property(cp=>cp.NroIdentificacion).HasMaxLength(100);
+            e.Property(cp=>cp.RazonSocial).HasMaxLength(200);
+            e.Property(cp=>cp.Direccion).HasMaxLength(255);
+            e.Property(cp=>cp.Correo).HasMaxLength(255);
+        });
         //add data seeding
         SeedData(modelBuilder);
     }

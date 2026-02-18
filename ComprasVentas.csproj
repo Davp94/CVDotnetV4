@@ -31,9 +31,7 @@
     <Folder Include="Middleware/" />
     <Folder Include="Models/" />
     <Folder Include="Repository/" />
-    <Folder Include="Services/" />
     <Folder Include="Services/impl/" />
-    <Folder Include="Services/spec/" />
   </ItemGroup>
 
 </Project>

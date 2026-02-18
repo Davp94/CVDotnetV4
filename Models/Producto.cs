@@ -23,4 +23,6 @@ public class Producto
     public Categoria? Categoria { get; set; }
 
     public ICollection<AlmacenProducto> AlmacenProductos { get; set; } = [];
+
+    public ICollection<Movimiento> Movimientos { get; set; } = [];
 }

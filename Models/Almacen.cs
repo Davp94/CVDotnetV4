@@ -21,4 +21,6 @@ public class Almacen
     public Sucursal? Sucursal { get; set; }
 
     public ICollection<AlmacenProducto> AlmacenProductos { get; set; } = [];
+
+    public ICollection<Movimiento> Movimientos { get; set; } = [];
 }
