@@ -27,6 +27,7 @@ builder.Services.AddScoped<ISucursalService, SucursalService>();
 builder.Services.AddScoped<AlmacenProductoRepository>();
 builder.Services.AddScoped<NotaRepository>();
 builder.Services.AddScoped<MovimientoRepository>();
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ClienteProveedorRepository>();
 builder.Services.AddScoped<INotaService, NotaService>();
 builder.Services.AddScoped<IProductoService, ProductoService>();

@@ -39,20 +39,30 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Rol>()
             .HasMany(r=>r.Permisos)
             .WithMany(p=>p.Roles)
-            .UsingEntity(q=> {
-                q.ToTable("permiso_rol");
-                q.HasNoKey();
-                //q.HasKey("PermisosId", "RolesId");
-            });
+            .UsingEntity<Dictionary<string, object>>(
+        "permiso_rol",
+        j => j.HasOne<Permiso>().WithMany().HasForeignKey("PermisosId"),
+        j => j.HasOne<Rol>().WithMany().HasForeignKey("RolesId"),
+        j =>
+        {
+            j.HasKey("PermisosId", "RolesId");
+            j.ToTable("permiso_rol");
+        }
+    );
 
         modelBuilder.Entity<Usuario>()
             .HasMany(r=>r.Roles)
             .WithMany(p=>p.Usuarios)
-            .UsingEntity(q=> {
-                q.ToTable("usuario_rol");
-                q.HasNoKey();
-                //q.HasKey("RolesId", "UsuariosId");
-            });
+            .UsingEntity<Dictionary<string, object>>(
+        "usuario_rol",
+        j => j.HasOne<Rol>().WithMany().HasForeignKey("RolesId"),
+        j => j.HasOne<Usuario>().WithMany().HasForeignKey("UsuariosId"),
+        j =>
+        {
+            j.HasKey("UsuariosId", "RolesId");
+            j.ToTable("usuario_rol");
+        }
+    );
    
         modelBuilder.Entity<Usuario>()
             .HasOne(u=>u.Persona)
@@ -357,7 +367,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         };
 
         modelBuilder.Entity<Persona>().HasData(personaAdmin, personaUsuario, personaInvitado);
-
+        var pass = BCrypt.Net.BCrypt.HashPassword("123456");
         // ========== USUARIOS ==========
         // Nota: En producción, las contraseñas deben estar hasheadas
         var usuarioSuperAdmin = new Usuario
@@ -365,7 +375,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             Id = 1,
             Nombre = "superadmin",
             Correo = "superadmin@comprasventas.com",
-            Password = BCrypt.Net.BCrypt.HashPassword("123456")
+            Password = pass
         };
 
         var usuarioAdmin = new Usuario
@@ -373,7 +383,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             Id = 2,
             Nombre = "admin",
             Correo = "admin@comprasventas.com",
-            Password = BCrypt.Net.BCrypt.HashPassword("123456")
+            Password = pass
         };
 
         var usuarioRegular = new Usuario
@@ -381,7 +391,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             Id = 3,
             Nombre = "usuario1",
             Correo = "usuario1@comprasventas.com",
-            Password = BCrypt.Net.BCrypt.HashPassword("123456")
+            Password = pass
         };
 
         modelBuilder.Entity<Usuario>().HasData(usuarioSuperAdmin, usuarioAdmin, usuarioRegular);

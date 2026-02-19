@@ -21,4 +21,12 @@ public class NotaRepository(AppDbContext context)
         return nota;
     }
 
+    public async Task<Nota?> GetByIdAsync(int id)
+    {
+        return await _context.Notas
+            .Include(n=>n.ClienteProveedor)
+            .Include(n=>n.Movimientos)
+            .FirstOrDefaultAsync(n=>n.Id == id);
+    }
+
 }
