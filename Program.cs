@@ -2,6 +2,7 @@ using ComprasVentas.Common;
 using ComprasVentas.Data;
 using ComprasVentas.Middleware;
 using ComprasVentas.Repository;
+using ComprasVentas.Seeders.Dev;
 using ComprasVentas.Services.impl;
 using ComprasVentas.Services.spec;
 using Microsoft.AspNetCore.Mvc;
@@ -74,7 +75,15 @@ if (app.Environment.IsDevelopment())
     {
         var context  = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         context.Database.Migrate();
+
+        var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+        await seeder.SeedAsync();
     }
+}
+//TODO add base seeders
+using (var scope = app.Services.CreateScope())
+{
+    
 }
 
 app.UseExceptionHandler();

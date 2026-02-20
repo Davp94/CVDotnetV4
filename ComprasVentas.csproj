@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Bogus" Version="35.6.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
@@ -32,6 +33,9 @@
     <Folder Include="Middleware/" />
     <Folder Include="Models/" />
     <Folder Include="Repository/" />
+    <Folder Include="Seeders/" />
+    <Folder Include="Seeders/Dev/" />
+    <Folder Include="Seeders/Prod/" />
     <Folder Include="Services/impl/" />
   </ItemGroup>
 
