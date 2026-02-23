@@ -302,9 +302,9 @@ namespace ComprasVentas.Migrations
                 columns: new[] { "Id", "Apellidos", "Direccion", "FechaNacimiento", "Genero", "Nacionalidad", "Nombres", "Telefono" },
                 values: new object[,]
                 {
-                    { 1, "Pérez", "Calle Principal 123", new DateTime(1985, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Masculino", "Mexicana", "Juan", "+1234567890" },
-                    { 2, "González", "Avenida Central 456", new DateTime(1990, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "Femenino", "Mexicana", "María", "+9876543210" },
-                    { 3, "López", "Plaza Mayor 789", new DateTime(1995, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Masculino", "Mexicana", "Carlos", "+1122334455" }
+                    { 1, "Pérez", "Calle Principal 123", new DateTime(1985, 5, 15, 0, 0, 0, 0, DateTimeKind.Utc), "Masculino", "Mexicana", "Juan", "+1234567890" },
+                    { 2, "González", "Avenida Central 456", new DateTime(1990, 8, 22, 0, 0, 0, 0, DateTimeKind.Utc), "Femenino", "Mexicana", "María", "+9876543210" },
+                    { 3, "López", "Plaza Mayor 789", new DateTime(1995, 3, 10, 0, 0, 0, 0, DateTimeKind.Utc), "Masculino", "Mexicana", "Carlos", "+1122334455" }
                 });
 
             migrationBuilder.InsertData(

@@ -113,3 +113,96 @@ Content-Type: application/json
 ### Delete Usuario
 DELETE {{ComprasVentas_HostAddress}}/api/Usuario/1
 Accept: application/json
+
+###
+
+# Auth Controller Tests
+
+### Login / Authenticate
+POST {{ComprasVentas_HostAddress}}/api/Auth/login
+Content-Type: application/json
+
+{
+  "username": "Alfredo.Reynoso",
+  "password": "Password123!"
+}
+
+###
+
+# Producto Controller Tests
+
+### Get All Productos Pagination
+GET {{ComprasVentas_HostAddress}}/api/Producto?Page=50&Size=10
+Accept: application/json
+
+### Create Producto
+POST {{ComprasVentas_HostAddress}}/api/Producto
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="nombre"
+
+Producto de Prueba
+--boundary
+Content-Disposition: form-data; name="unidadMedida"
+
+Unidad
+--boundary
+Content-Disposition: form-data; name="marca"
+
+Generica
+--boundary
+Content-Disposition: form-data; name="precioVenta"
+
+150.50
+--boundary
+Content-Disposition: form-data; name="categoriaId"
+
+1
+--boundary--
+
+###
+
+# Nota Controller Tests
+
+### Create Nota
+POST {{ComprasVentas_HostAddress}}/api/Nota
+Content-Type: application/json
+
+{
+  "impuestos": 10.50,
+  "total": 300.00,
+  "descuentos": 5.00,
+  "estado": true,
+  "tipo": "Venta",
+  "observaciones": "Nota de prueba desde HTTP",
+  "clienteProveedorId": 1,
+  "usuarioId": 6,
+  "movimientos": [
+    {
+      "cantidad": 2,
+      "tipoMovimiento": "Salida",
+      "precioUnitarioCompra": 0,
+      "precioUnitarioVenta": 150.00,
+      "observaciones": "Detalle de Venta",
+      "productoId": 4,
+      "almacenId": 11,
+      "notaId": 0
+    },
+    {
+      "cantidad": 2,
+      "tipoMovimiento": "Salida",
+      "precioUnitarioCompra": 0,
+      "precioUnitarioVenta": 150.00,
+      "observaciones": "Detalle de Venta",
+      "productoId": 4,
+      "almacenId": 11,
+      "notaId": 0
+    },
+  ]
+}
+
+### Generate Nota Report
+GET {{ComprasVentas_HostAddress}}/api/Nota/2/report
+Accept: application/pdf
+

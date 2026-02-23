@@ -29,7 +29,7 @@ public class AuthService : IAuthService
             .Include(r=>r.Roles)
             .ThenInclude(r=>r.Permisos)
             .FirstOrDefaultAsync(u => u.Nombre == authRequestDto.Username);
-        if(user == null || user.Password != authRequestDto.Password)
+        if(user == null || !BCrypt.Net.BCrypt.Verify(authRequestDto.Password, user.Password))
         {
             throw new BadRequestException("Credenciales no validas");
         }

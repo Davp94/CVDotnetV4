@@ -35,74 +35,97 @@ public class NotaService : INotaService
 
     public async Task<NotaDto> CreateNotaASync(CreateNotaDto notaRequestDto)
     {
-        // Create Nota
+        // 1. Fetch Usuario
+        var usuario = await _context.Usuarios.FindAsync(notaRequestDto.UsuarioId);
+        if (usuario == null)
+            throw new Exception("Usuario no encontrado");
+
+        // 2. Fetch ClienteProveedor
+        var clienteProveedor = await _clienteProveedorRepository.GetByIdAsync(notaRequestDto.ClienteProveedorId);
+        if (clienteProveedor == null)
+            throw new Exception("Cliente/Proveedor no encontrado");
+
+        // 3. Create Nota
         var nota = new Nota
         {
-            Fecha = DateTime.Now,
+            Fecha = DateTime.UtcNow,
             TipoNota = notaRequestDto.Tipo,
-            ClienteProveedor = await _clienteProveedorRepository.GetByIdAsync(notaRequestDto.ClienteProveedorId),
+            ClienteProveedor = clienteProveedor,
+            Usuario = usuario,
             Total = notaRequestDto.Total,
             Observaciones = notaRequestDto.Observaciones,
             Impuestos = notaRequestDto.Impuestos,
             Descuentos = notaRequestDto.Descuentos,
             Estado = notaRequestDto.Estado
         };
+
         await _notaRepository.CreateNota(nota);
 
-        // Create Movimientos & Validate Stock
+        // 4. Create Movimientos and Validate
+        var movimientosCreated = new List<Movimiento>();
         foreach (var movimientoDto in notaRequestDto.Movimientos)
         {
-            var almacenProducto = await _almacenProductoRepository.GetByAlmacenAndProductoAsync(movimientoDto.AlmacenId, movimientoDto.ProductoId);
+            movimientoDto.TipoMovimiento = nota.TipoNota == "Compra" ? "Entrada" : "Salida";
 
-            if (almacenProducto == null)
-            {
-                throw new Exception($"Producto {movimientoDto.ProductoId} no encontrado en almacen {movimientoDto.AlmacenId}");
-            }
+            // Validating that the product and almacenes are valid
+            var producto = await _context.Productos.FindAsync(movimientoDto.ProductoId);
+            if(producto == null) throw new Exception("Producto no encontrado");
 
-            // Validate stock if it's a salida
-            if (notaRequestDto.Tipo == "Salida")
-            {
-                if (almacenProducto.CantidadActual < movimientoDto.Cantidad)
-                    throw new Exception($"Stock insuficiente para producto {almacenProducto.Producto?.Nombre ?? "Desconocido"} en almacen");
+            var almacen = await _context.Almacenes.FindAsync(movimientoDto.AlmacenId);
+            if(almacen == null) throw new Exception("Almacen no encontrado");
 
-                almacenProducto.CantidadActual -= (int)movimientoDto.Cantidad;
-            }
-            else if (notaRequestDto.Tipo == "Entrada")
-            {
-                almacenProducto.CantidadActual += (int)movimientoDto.Cantidad;
-            }
-
-            await _almacenProductoRepository.UpdateAsync(almacenProducto);
-
-            var movimiento = new Movimiento
+            var movimientoToCreate = new Movimiento
             {
                 Nota = nota,
-                Producto = _context.Productos.Find(movimientoDto.ProductoId),
+                Producto = producto,
+                Almacen = almacen,
                 Cantidad = movimientoDto.Cantidad,
                 PrecioUnitarioCompra = movimientoDto.PrecioUnitarioCompra,
                 PrecioUnitarioVenta = movimientoDto.PrecioUnitarioVenta,
                 TipoMovimiento = movimientoDto.TipoMovimiento,
-                Observaciones = movimientoDto.Observaciones,
-                Almacen = almacenProducto.Almacen
+                Observaciones = movimientoDto.Observaciones
             };
-            await _movimientoRepository.CreateMovimiento(movimiento);
+
+            await _movimientoRepository.CreateMovimiento(movimientoToCreate);
+            movimientosCreated.Add(movimientoToCreate);
         }
 
-        var notaDto = new NotaDto
+        // 5. Update Stock
+        foreach (var movimiento in movimientosCreated)
+        {
+            var almacenProductoRetrieved = await _almacenProductoRepository.GetByAlmacenAndProductoAsync(movimiento.Almacen.Id, movimiento.Producto.Id);
+            
+            if (almacenProductoRetrieved == null)
+                throw new Exception("AlmacenProducto no encontrado");
+
+            switch (movimiento.TipoMovimiento)
+            {
+                case "Entrada":
+                    almacenProductoRetrieved.CantidadActual += (int)movimiento.Cantidad;
+                    break;
+                case "Salida":
+                    almacenProductoRetrieved.CantidadActual -= (int)movimiento.Cantidad;
+                    if (almacenProductoRetrieved.CantidadActual < 0) 
+                        throw new Exception("Stock insuficiente");
+                    break;
+                default:
+                    break;
+            }
+
+            await _almacenProductoRepository.UpdateAsync(almacenProductoRetrieved);
+        }
+
+        return new NotaDto
         {
             Id = nota.Id,
             Fecha = nota.Fecha,
             TipoNota = nota.TipoNota,
-            //ClienteProveedorId = nota.ClienteProveedor != null ? nota.ClienteProveedor.Id : 0, 
             Total = nota.Total,
             Impuestos = nota.Impuestos,
             Descuentos = nota.Descuentos,
             Estado = nota.Estado,
             Observaciones = nota.Observaciones
         };
-
-        return notaDto;
-
     }
 
     public async Task<byte[]> GenerateNotaReportPdfAsync(int notaId)
@@ -161,7 +184,7 @@ public class NotaService : INotaService
                                 var precio = nota.TipoNota == "Entrada" ? item.PrecioUnitarioCompra : item.PrecioUnitarioVenta;
                                 var totalItem = item.Cantidad * precio;
 
-                                table.Cell().Element(CellStyle).Text(item.Producto.Nombre ?? "Sin nombre");
+                                table.Cell().Element(CellStyle).Text(item.Producto?.Nombre ?? "Sin nombre");
                                 table.Cell().Element(CellStyle).Text(item.Cantidad.ToString() ?? "0");
                                 table.Cell().Element(CellStyle).Text($"{precio:F2}" ?? "0");
                                 table.Cell().Element(CellStyle).Text($"{totalItem:F2}" ?? "0");

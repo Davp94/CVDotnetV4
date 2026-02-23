@@ -32,6 +32,19 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ClienteProveedorRepository>();
 builder.Services.AddScoped<INotaService, NotaService>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
+
+// Registrando Seeders
+builder.Services.AddScoped<PermisoSeeder>();
+builder.Services.AddScoped<RolSeeder>();
+builder.Services.AddScoped<UsuarioSeeder>();
+builder.Services.AddScoped<CategoriaSeeder>();
+builder.Services.AddScoped<ProductoSeeder>();
+builder.Services.AddScoped<SucursalSeeder>();
+builder.Services.AddScoped<AlmacenSeeder>();
+builder.Services.AddScoped<AlmacenProductoSeeder>();
+builder.Services.AddScoped<ClienteProveedorSeeder>();
+
+builder.Services.AddScoped<DataSeeder>();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>(); // new GlobalExceptionHandler();
 builder.Services.AddProblemDetails();

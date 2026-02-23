@@ -26,6 +26,7 @@ public class NotaRepository(AppDbContext context)
         return await _context.Notas
             .Include(n=>n.ClienteProveedor)
             .Include(n=>n.Movimientos)
+            .ThenInclude(m=>m.Producto)
             .FirstOrDefaultAsync(n=>n.Id == id);
     }
 

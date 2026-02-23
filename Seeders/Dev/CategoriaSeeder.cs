@@ -1,4 +1,3 @@
-using System;
 using ComprasVentas.Data;
 using ComprasVentas.Models;
 
@@ -15,23 +14,24 @@ public class CategoriaSeeder
 
     public async Task SeedAsync()
     {
-        if(_context.Categorias.Any())
+        if (_context.Categorias.Any())
             return;
 
         var categorias = new List<Categoria>
         {
-            new Categoria { Nombre = "Electrónica" },
-            new Categoria { Nombre = "Ropa" },
-            new Categoria { Nombre = "Hogar" },
-            new Categoria { Nombre = "Deportes" },
-            new Categoria { Nombre = "Libros" }
+            new() { Nombre = "Electrónica" },
+            new() { Nombre = "Ropa y Moda" },
+            new() { Nombre = "Hogar y Jardín" },
+            new() { Nombre = "Deportes y Aire Libre" },
+            new() { Nombre = "Libros y Papelería" },
+            new() { Nombre = "Alimentos y Bebidas" },
+            new() { Nombre = "Herramientas" },
+            new() { Nombre = "Juguetes" },
+            new() { Nombre = "Salud y Belleza" },
+            new() { Nombre = "Automotriz" }
         };
 
-        foreach (var categoria in categorias)
-        {
-            _context.Categorias.Add(categoria);
-        }
-
+        await _context.Categorias.AddRangeAsync(categorias);
         await _context.SaveChangesAsync();
     }
 }
